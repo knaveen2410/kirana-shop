@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Place Your Order - Kirana Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+</head>
+<body>
+    <!-- Shop Header -->
+    <header class="shop-header">
+        <div class="shop-info">
+            <h1>Hanuman Kirana and General Stores</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>Place Your Order</h2>
+        <form action="/place_order" method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number:</label>
+                    <input type="text" id="phone" name="phone" required>
+                </div>
+
+                <div class="status-check">
+                    <h3>Already placed an order?</h3>
+                    <a href="{{ url_for('check_status') }}" class="status-button">Check Order Status</a>
+                </div>
+            </div>
+
+            <div class="items-section">
+                <h3>Items:</h3>
+                <div id="items-container">
+                    <div class="item-row">
+                        <input type="text" name="item_name[]" placeholder="Item name" required>
+                        <input type="text" name="quantity[]" placeholder="Quantity" min="1" required class="quantity-input">
+                        <button type="button" class="edit-btn" onclick="editItem(this)">Edit</button>
+                        <button type="button" class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </div>
+                </div>
+
+                <button type="button" onclick="addItemRow()">Add More Items</button>
+                <button type="submit">Place Order</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function addItemRow() {
+            const container = document.getElementById('items-container');
+            const newRow = document.createElement('div');
+            newRow.className = 'item-row';
+            newRow.innerHTML = `
+                <input type="text" name="item_name[]" placeholder="Item name" required>
+                <input type="text" name="quantity[]" placeholder="Quantity" min="1" required>
+                <button type="button" class="edit-btn" onclick="editItem(this)">Edit</button>
+                <button type="button" class="delete-btn" onclick="deleteItem(this)">Delete</button>
+            `;
+            container.appendChild(newRow);
+        }
+
+        function deleteItem(button) {
+            const row = button.closest('.item-row');
+            if (document.querySelectorAll('.item-row').length > 1) {
+                row.remove();
+            } else {
+                alert("You need at least one item in your order.");
+            }
+        }
+
+        function editItem(button) {
+            const row = button.closest('.item-row');
+            const nameInput = row.querySelector('input[name="item_name[]"]');
+            const qtyInput = row.querySelector('input[name="quantity[]"]');
+
+            if (button.textContent === 'Edit') {
+                nameInput.readOnly = false;
+                qtyInput.readOnly = false;
+                button.textContent = 'Save';
+                button.classList.add('save-btn');
+            } else {
+                nameInput.readOnly = true;
+                qtyInput.readOnly = true;
+                button.textContent = 'Edit';
+                button.classList.remove('save-btn');
+            }
+        }
+    </script>
+</body>
+</html>

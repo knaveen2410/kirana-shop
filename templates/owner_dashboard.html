@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Dashboard - Kirana Shop</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='owner.css') }}">
+</head>
+<body>
+    <!-- Shop header -->
+    <div class="shop-header">
+        <h1>Hanuman Kirana and General Stores</h1>
+    </div>
+    
+    <div class="container">
+        <div class="dashboard-header">
+            <h2>Owner Dashboard</h2>
+            <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+        </div>
+        
+        {% if orders %}
+        <div class="grid">
+            {% for order in orders %}
+            <div class="order-card">
+                <!-- Order header with delete button -->
+                <div class="order-header">
+                    <div class="order-summary" onclick="toggleDetails(this)">
+                        <h4>{{ order.customer_name }}</h4>
+                        <p>Phone: {{ order.phone_number }}</p>
+                        <p>Date: {{ order.date }}</p>
+                        <span class="status {{ order.status.lower() }}">{{ order.status }}</span>
+                        <div class="total">Total: ₹{{ "%.2f"|format(order.total) if order.total else 'Not calculated yet' }}</div>
+                    </div>
+                    <form action="{{ url_for('delete_order', order_id=order['order_id']) }}" method="post" 
+                          onsubmit="return confirm('Are you sure you want to delete this order?');" class="delete-form">
+                        <button type="submit" class="delete-button">Delete</button>
+                    </form>
+                </div>
+                
+                <!-- Order details section -->
+                <div class="order-details">
+                    <form action="/update_order" method="POST">
+                        <input type="hidden" name="order_id" value="{{ order.order_id }}">
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Availability</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order['items'] %}
+                                <tr>
+                                    <td>{{ item[2] }}</td>
+                                    <td>{{ item[3] }}</td>
+                                    <td>
+                                        <input type="hidden" name="item_id[]" value="{{ item[0] }}">
+                                        <select name="availability[]">
+                                            <option value="Yes" {% if item[4] == 'Yes' %}selected{% endif %}>Yes</option>
+                                            <option value="No" {% if item[4] == 'No' %}selected{% endif %}>No</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="price[]" step="0.01" value="{{ item[5] if item[5] else '' }}" placeholder="Price">
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <div class="actions">
+                            <button type="submit" name="update_items">Update Items</button>
+                            {% if order.status != 'Packed' %}
+                            <button type="submit" name="mark_packed">Mark as Packed</button>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p>No orders yet.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleDetails(summary) {
+            const card = summary.closest(".order-card");
+            const details = card.querySelector(".order-details");
+            details.style.display = details.style.display === "block" ? "none" : "block";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Confirmation - Kirana Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Hanuman Kirana Store Theme - Confirmation Page */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Shop Header - Consistent with other pages */
+.shop-header {
+    background-color: #ff6b00;
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.shop-info h1 {
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Confirmation Container */
+.confirmation {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.confirmation h2 {
+    color: #28a745; /* Success green */
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.confirmation p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    color: #555;
+}
+
+/* Buttons - Consistent with theme */
+button, .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: inline-block;
+    text-decoration: none;
+    margin: 0.5rem;
+}
+
+button {
+    background-color: #ff6b00;
+    color: white;
+}
+
+button:hover {
+    background-color: #e05d00;
+}
+
+a.btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+a.btn:hover {
+    background-color: #5a6268;
+}
+
+/* Button Container */
+.button-group {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .confirmation {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .confirmation h2 {
+        font-size: 1.5rem;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    button, .btn {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- Shop Header -->
+    <header class="shop-header">
+        <div class="shop-info">
+            <h1>Hanuman Kirana and General Stores</h1>
+        </div>
+    </header>
+
+    <div class="confirmation">
+        <h2>Congratulations! Your order has been placed.</h2>
+        <p>We'll process your order shortly.</p>
+        
+        <div class="button-group">
+            <form action="/check_status" method="POST">
+                <input type="hidden" name="phone" value="{{ phone_number }}">
+                <button type="submit">Check Order Status</button>
+            </form>
+            
+            <a href="/" class="btn">Place Another Order</a>
+        </div>
+    </div>
+</body>
+</html>

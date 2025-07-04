@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Check Order Status - Kirana Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='status.css') }}">
+</head>
+<body>
+    <!-- Shop Header -->
+    <header class="shop-header">
+        <div class="shop-info">
+            <h1>Hanuman Kirana and General Stores</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>Check Order Status</h2>
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="phone">Enter Your Phone Number:</label>
+                <input type="text" id="phone" name="phone" required 
+                       value="{{ phone_number if phone_number else '' }}">
+                <button type="submit">Check Status</button>
+                <a href="{{ url_for('index') }}" class="status-button">Go Back</a>
+            </div>
+        </form>
+        
+        {% if orders %}
+            <h3>Your Orders:</h3>
+            {% for order in orders %}
+                <div class="order-card">
+                    <div class="order-header" onclick="toggleOrderDetails({{ loop.index }})">
+                        <h4>Order Date: {{ order.date }}</h4>
+                        <span class="status {{ order.status.lower() }}">{{ order.status }}</span>
+                    </div>
+                    
+                    <div class="order-details" id="order-details-{{ loop.index }}" style="display: none;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Availability</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order['items'] %}
+                                    <tr>
+                                        <td>{{ item[2] }}</td>
+                                        <td>{{ item[3] }}</td>
+                                        <td>{{ item[4] }}</td>
+                                        <td>₹{{ "%.2f"|format(item[5]) if item[5] else '-' }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="total">
+                            <strong>Total Bill: ₹{{ "%.2f"|format(order.total) if order.total else 'Not calculated yet' }}</strong>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            
+            <script>
+                function toggleOrderDetails(index) {
+                    const details = document.getElementById(`order-details-${index}`);
+                    details.style.display = details.style.display === 'none' ? 'block' : 'none';
+                }
+            </script>
+        {% elif request.method == 'POST' %}
+            <p>No orders found for this phone number.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
